@@ -1,10 +1,10 @@
 """Heading-aware policy retrieval with an in-memory Chroma collection."""
 from collections import Counter
-from hashlib import blake2b
 from math import log, sqrt
 from pathlib import Path
-import re
+from hashlib import blake2b
 import chromadb
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 
