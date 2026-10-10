@@ -19,23 +19,23 @@ flowchart LR
     Verify --> Answer[Answer and structured JSON]
 ```
 
-There are exactly two LLM agents. The **Triage Agent** identifies the category, intent, entities, scope, and proposed priority. Python checks identifiers and applies the priority and escalation rules. The **Resolution Agent** receives the verified context, retrieved policy sections, and calculated CSV facts, then drafts the response. Both agents use the OpenRouter model set in `.env` through [`llm.py`](retail-copilot-simple/llm.py).
+There are exactly two LLM agents. The **Triage Agent** identifies the category, intent, entities, scope, and proposed priority. Python checks identifiers and applies the priority and escalation rules. The **Resolution Agent** receives the verified context, retrieved policy sections, and calculated CSV facts, then drafts the response. Both agents use the OpenRouter model set in `.env` through [`llm.py`](retail-copilot/llm.py).
 
 Policy Markdown is split by heading and indexed in an in-memory ChromaDB collection. Local, deterministic 384-dimensional hashed-term vectors avoid an embedding service or model download. This is primarily lexical retrieval, so paraphrased requests may miss relevant sections. pandas reads the supplied CSVs directly; CSV rows are not put in ChromaDB. A policy citation is accepted only when its section was retrieved.
 
 | Component | File | Responsibility |
 | --- | --- | --- |
-| UI | [`streamlit_app.py`](retail-copilot-simple/streamlit_app.py) | Local browser form and structured result |
-| Orchestration and CLI | [`app.py`](retail-copilot-simple/app.py) | Shared `run_query` workflow, priority, evidence, escalation |
-| Agents | [`agents/`](retail-copilot-simple/agents) | Triage and resolution prompts and JSON validation |
-| Policy search | [`tools/policies.py`](retail-copilot-simple/tools/policies.py) | ChromaDB indexing, retrieval, citation sources |
-| Data | [`tools/data.py`](retail-copilot-simple/tools/data.py) | CSV filtering, joins, counts, and routes |
-| Safety | [`tools/safety.py`](retail-copilot-simple/tools/safety.py) | Restricted-request checks and masking |
-| Evaluation | [`evaluate.py`](retail-copilot-simple/evaluate.py) | Public-case predictions and metrics |
+| UI | [`streamlit_app.py`](retail-copilot/streamlit_app.py) | Local browser form and structured result |
+| Orchestration and CLI | [`app.py`](retail-copilot/app.py) | Shared `run_query` workflow, priority, evidence, escalation |
+| Agents | [`agents/`](retail-copilot/agents) | Triage and resolution prompts and JSON validation |
+| Policy search | [`tools/policies.py`](retail-copilot/tools/policies.py) | ChromaDB indexing, retrieval, citation sources |
+| Data | [`tools/data.py`](retail-copilot/tools/data.py) | CSV filtering, joins, counts, and routes |
+| Safety | [`tools/safety.py`](retail-copilot/tools/safety.py) | Restricted-request checks and masking |
+| Evaluation | [`evaluate.py`](retail-copilot/evaluate.py) | Public-case predictions and metrics |
 
 ## Input data and supported work
 
-The supplied files remain in [`data/`](data/): five policy Markdown files in `data/knowledge_base/`, nine operational CSVs in `data/data/`, and the public evaluation files in `data/evaluation/`. The app reads these folders in place. It can also read the same three folders placed inside `retail-copilot-simple/` if the application is moved elsewhere. Do not copy credentials or evaluation labels into model prompts.
+The supplied files remain in [`data/`](data/): five policy Markdown files in `data/knowledge_base/`, nine operational CSVs in `data/data/`, and the public evaluation files in `data/evaluation/`. The app reads these folders in place. It can also read the same three folders placed inside `retail-copilot/` if the application is moved elsewhere. Do not copy credentials or evaluation labels into model prompts.
 
 Supported intents include inventory issues, vendor shortages, unresolved P1/P2 case summaries, product quality trends, policy questions, and routine store issues. Priority rules use the supplied guide and verified evidence: store-wide payment failures and active safety risks are P1; impactful shortages and repeated quality problems are generally P2; isolated device or pricing problems are generally P3; general questions and reporting requests are P4. Unclear scope prompts a follow-up. Escalation routes come from `escalation_matrix.csv`; an unverified route is reported as unconfirmed.
 
@@ -48,14 +48,14 @@ Restricted data requests and explicit instruction overrides are refused before a
 Use Python 3.10 or newer. From the repository root in PowerShell:
 
 ```powershell
-cd retail-copilot-simple
+cd retail-copilot
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 ```
 
-Set `OPENROUTER_API_KEY` and an exact compatible `OPENROUTER_MODEL` ID in `retail-copilot-simple/.env`. Keep `OPENROUTER_BASE_URL=https://openrouter.ai/api/v1`. The `.env` file is ignored by Git. If it already exists locally, edit it rather than overwriting it. Restart the app after changing the model.
+Set `OPENROUTER_API_KEY` and an exact compatible `OPENROUTER_MODEL` ID in `retail-copilot/.env`. Keep `OPENROUTER_BASE_URL=https://openrouter.ai/api/v1`. The `.env` file is ignored by Git. If it already exists locally, edit it rather than overwriting it. Restart the app after changing the model.
 
 ```powershell
 python -m streamlit run streamlit_app.py --server.address 127.0.0.1
@@ -75,7 +75,7 @@ The CLI prints a readable response and structured JSON with `category`, `priorit
 
 ## Evaluation
 
-`python evaluate.py` reads the public cases and prediction schema, then writes [`predictions.csv`](retail-copilot-simple/outputs/predictions.csv) and [`metrics.csv`](retail-copilot-simple/outputs/metrics.csv). The public evaluation run on 10 October 2026 produced:
+`python evaluate.py` reads the public cases and prediction schema, then writes [`predictions.csv`](retail-copilot/outputs/predictions.csv) and [`metrics.csv`](retail-copilot/outputs/metrics.csv). The public evaluation run on 10 October 2026 produced:
 
 | Metric | Result |
 | --- | ---: |

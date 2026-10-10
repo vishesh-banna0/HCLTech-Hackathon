@@ -9,6 +9,6 @@ __pycache__/
 .pytest_cache/
 
 # Local evaluation and Streamlit runtime files
-/retail-copilot-simple/outputs/*.csv
-/retail-copilot-simple/outputs/*.log
-/retail-copilot-simple/outputs/*.pid
+/retail-copilot/outputs/*.csv
+/retail-copilot/outputs/*.log
+/retail-copilot/outputs/*.pid
