@@ -1,6 +1,7 @@
 """Agent 1: interpret a masked issue; never invent identifiers."""
-import json
+
 import re
+import json
 from llm import complete
 
 CATEGORIES = (
