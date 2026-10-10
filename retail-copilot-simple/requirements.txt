@@ -1,0 +1,5 @@
+openai>=1.0,<3
+python-dotenv>=1.0,<2
+pandas>=2.0,<3
+chromadb>=1.0,<2
+streamlit>=1.38,<2

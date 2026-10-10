@@ -1,0 +1,14 @@
+# Supplied local data and credentials
+/data/
+.env
+
+# Python environments and caches
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local evaluation and Streamlit runtime files
+/retail-copilot-simple/outputs/*.csv
+/retail-copilot-simple/outputs/*.log
+/retail-copilot-simple/outputs/*.pid
